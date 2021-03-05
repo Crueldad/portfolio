@@ -1,0 +1,674 @@
+DDL Sample:
+USE G3
+GO
+
+-- ***CREATE Customer***
+    /* Marital Status */
+    CREATE TABLE MaritalStatus
+    (
+        MARITAL_STATUS_ID INT NOT NULL,
+        STATUS VARCHAR(255),
+
+        CONSTRAINT PK_MaritalStatus_MARITAL_STATUS_ID PRIMARY KEY CLUSTERED (MARITAL_STATUS_ID)
+    );
+
+    /* Income Level */
+    CREATE TABLE IncomeLevel
+    (
+        INCOME_LEVEL_ID INT NOT NULL,
+        INCOME_LEVEL VARCHAR(255),
+
+        CONSTRAINT PK_IncomeLevel_INCOME_LEVEL_ID PRIMARY KEY CLUSTERED (INCOME_LEVEL_ID)
+    );
+
+    /* Customer */
+    CREATE TABLE Customer
+    (
+        CUST_ID INT NOT NULL,
+        FIRST_NAME VARCHAR(255),
+        LAST_NAME VARCHAR(255),
+        GENDER VARCHAR(1),
+        PHONE_NUMBER VARCHAR(255),
+        EMAIL VARCHAR(255),
+        YEAR_OF_BIRTH INT,
+        CREDIT_LIMIT INT,
+        MARITAL_STATUS_ID INT NOT NULL,
+        INCOME_LEVEL_ID INT NOT NULL,
+
+        CONSTRAINT PK_Customer_CUST_ID PRIMARY KEY CLUSTERED (CUST_ID),
+        CONSTRAINT FK_Customer_MARI_STATUS_ID FOREIGN KEY (MARITAL_STATUS_ID) REFERENCES MaritalStatus (MARITAL_STATUS_ID),
+        CONSTRAINT FK_Customer_INCOME_LEVEL_ID FOREIGN KEY (INCOME_LEVEL_ID) REFERENCES IncomeLevel (INCOME_LEVEL_ID)
+    );
+
+-- ***CREATE Address***
+    /* Region */
+    CREATE TABLE Region
+    (
+        REGION_ID INT NOT NULL,
+        REGION VARCHAR(255),
+
+        CONSTRAINT PK_Region_REGION_ID PRIMARY KEY CLUSTERED (REGION_ID)
+    );
+
+    /* Subregion */
+    CREATE TABLE Subregion
+    (
+        SUBREGION_ID INT NOT NULL,
+        SUBREGION VARCHAR(255),
+        REGION_ID INT NOT NULL,
+
+        CONSTRAINT PK_Subregion_SUBREGION_ID PRIMARY KEY CLUSTERED (SUBREGION_ID),
+        CONSTRAINT FK_Subregion_REGION_ID FOREIGN KEY (REGION_ID) REFERENCES Region (REGION_ID),
+    );
+
+    /* Country */
+    CREATE TABLE Country
+    (
+        COUNTRY_ID INT NOT NULL,
+        COUNTRY VARCHAR(255),
+        SUBREGION_ID INT NOT NULL,
+
+        CONSTRAINT PK_Country_COUNTRY_ID PRIMARY KEY CLUSTERED (COUNTRY_ID),
+        CONSTRAINT FK_Country_SUBREGION_ID FOREIGN KEY (SUBREGION_ID) REFERENCES Subregion (SUBREGION_ID)
+    );
+
+    /* City */
+    CREATE TABLE City
+    (
+        POSTAL_CODE INT NOT NULL,
+        CITY VARCHAR(255),
+        STATE_PROVIENCE VARCHAR(255),
+        COUNTRY_ID INT NOT NULL,
+
+        CONSTRAINT PK_City_CUST_POSTAL_CODE PRIMARY KEY CLUSTERED (POSTAL_CODE),
+        CONSTRAINT FK_City_COUNTRY_ID FOREIGN KEY (COUNTRY_ID) REFERENCES Country (COUNTRY_ID)
+    );
+
+    /* Address */
+    CREATE TABLE Address
+    (
+        ADDRESS_ID INT NOT NULL,
+        STREET_ADDRESS VARCHAR(255),
+        POSTAL_CODE INT,
+
+        CONSTRAINT PK_Address_ADDRESS_ID PRIMARY KEY CLUSTERED (ADDRESS_ID),
+        CONSTRAINT FK_Address_POSTAL_CODE FOREIGN KEY (POSTAL_CODE) REFERENCES City (POSTAL_CODE)
+    )
+
+-- ***CREATE Product***
+    /* Product Category */
+    CREATE TABLE ProductCategory
+    (
+        PROD_CAT_ID INT NOT NULL,
+        CATEGORY VARCHAR(255),
+
+        CONSTRAINT PK_ProductCategory_PROD_CAT_ID PRIMARY KEY CLUSTERED (PROD_CAT_ID)
+    );
+
+    /* Product Subcategories */
+    CREATE TABLE ProductSubcategory
+    (
+        PROD_SUBCAT_ID INT NOT NULL,
+        SUBCATEGORY VARCHAR(255),
+        PROD_CAT_ID INT NOT NULL,
+
+        CONSTRAINT PK_ProductSubcategory_PROD_SUBCAT_ID PRIMARY KEY CLUSTERED (PROD_SUBCAT_ID),
+        CONSTRAINT FK_ProductSubcategory_PROD_CAT_ID FOREIGN KEY (PROD_CAT_ID) REFERENCES ProductCategory (PROD_CAT_ID)
+    );
+
+    /* Product */
+    CREATE TABLE Product
+    (
+        PROD_ID INT NOT NULL,
+        NAME VARCHAR(255),
+        DESCRIPTION VARCHAR(255),
+        STATUS VARCHAR(255),
+        LIST_PRICE DECIMAL(19, 4),
+        MIN_PRICE DECIMAL(19, 4),
+        PROD_WEIGHT_CLASS INT,
+        PROD_UNIT_OF_MEASURE VARCHAR(255),
+        PROD_PACK_SIZE VARCHAR(255),
+        PROD_SUBCAT_ID INT NOT NULL,
+
+        CONSTRAINT PK_Product_PROD_ID PRIMARY KEY CLUSTERED (PROD_ID),
+        CONSTRAINT FK_Product_PROD_SUBCAT_ID FOREIGN KEY (PROD_SUBCAT_ID) REFERENCES ProductSubcategory (PROD_SUBCAT_ID)
+    );
+
+-- ***CREATE Supplier***
+    /* Supplier */
+    CREATE TABLE Supplier
+    (
+        SUPPLIER_ID INT NOT NULL,
+        NAME VARCHAR(255),
+        CONTACT VARCHAR(255),
+        COUNTRY_ID INT NOT NULL,
+
+        CONSTRAINT PK_Supplier_SUPPLIER_ID PRIMARY KEY CLUSTERED (SUPPLIER_ID),
+        CONSTRAINT FK_Supplier_COUNTRY_ID FOREIGN KEY (COUNTRY_ID) REFERENCES Country (COUNTRY_ID)
+    )
+
+-- ***CREATE Promotion***
+    /* Promo Category */
+    CREATE TABLE PromoCategory
+    (
+        PROMO_CAT_ID INT NOT NULL,
+        CATEGORY VARCHAR(255),
+
+        CONSTRAINT PK_PromoCategory_PROMO_CAT_ID PRIMARY KEY CLUSTERED (PROMO_CAT_ID)
+    );
+
+    /* Promo Subcategory */
+    CREATE TABLE PromoSubcategory
+    (
+        PROMO_SUBCAT_ID INT NOT NULL,
+        SUBCATEGORY VARCHAR(255),
+        PROMO_CAT_ID INT NOT NULL,
+
+        CONSTRAINT PK_PromoSubcategory_PROMO_SUBCAT_ID PRIMARY KEY CLUSTERED (PROMO_SUBCAT_ID),
+        CONSTRAINT FK_PromoSubcategory_PROMO_CAT_ID FOREIGN KEY (PROMO_CAT_ID) REFERENCES PromoCategory (PROMO_CAT_ID)
+    );
+
+    /* Promotion */
+    CREATE TABLE Promotion
+    (
+        PROMO_ID INT NOT NULL,
+        NAME VARCHAR(255),
+        COST DECIMAL(19, 4),
+        BEGIN_DATE DATE,
+        END_DATE DATE,
+        PROMO_SUBCAT_ID INT NOT NULL,
+
+        CONSTRAINT PK_Promotion_PROMO_ID PRIMARY KEY CLUSTERED (PROMO_ID),
+        CONSTRAINT FK_Promotion_PROMO_SUBCAT_ID FOREIGN KEY (PROMO_SUBCAT_ID) REFERENCES PromoSubcategory (PROMO_SUBCAT_ID)
+    );
+
+-- ***CREATE Transinfo***
+    /* Channel */
+    CREATE TABLE Channel
+    (
+        CHANNEL_ID INT NOT NULL,
+        DESCRIPTION VARCHAR(255),
+        CLASS VARCHAR(255),
+
+        CONSTRAINT PK_Channel_CHANNEL_ID PRIMARY KEY CLUSTERED (CHANNEL_ID)
+    );
+
+    /* Transinfo */
+    CREATE TABLE Transinfo
+    (
+        SALESTRANS_ID INT NOT NULL,
+        SALE_DATE DATE,
+        SHIPPING_DATE DATE,
+        PAYMENT_DATE DATE,
+        QUANTITY_SOLD INT,
+        AMOUNT_SOLD DECIMAL(19, 4),
+        PROD_ID INT NOT NULL,
+        CUST_ID INT NOT NULL,
+        CHANNEL_ID INT NOT NULL,
+        PROMO_ID INT NOT NULL,
+
+        CONSTRAINT PK_Transinfo_SALESTRANS_ID PRIMARY KEY CLUSTERED (SALESTRANS_ID),
+        CONSTRAINT FK_Transinfo_PROD_ID FOREIGN KEY (PROD_ID) REFERENCES Product (PROD_ID),
+        CONSTRAINT FK_Transinfo_CUST_ID FOREIGN KEY (CUST_ID) REFERENCES Customer (CUST_ID),
+        CONSTRAINT FK_Transinfo_CHANNEL_ID FOREIGN KEY (CHANNEL_ID) REFERENCES Channel(CHANNEL_ID),
+        CONSTRAINT FK_Transinfo_PROMO_ID FOREIGN KEY (PROMO_ID) REFERENCES Promotion (PROMO_ID)
+    );
+
+    /* Order */
+    CREATE TABLE Orderinfo
+    (
+        ORDER_ID INT NOT NULL,
+        SALESTRANS_ID INT NOT NULL,
+
+        CONSTRAINT PK_Order_ORDER_ID PRIMARY KEY CLUSTERED (ORDER_ID),
+        CONSTRAINT FK_Order_SALESTRANS_ID FOREIGN KEY (SALESTRANS_ID) REFERENCES Transinfo (SALESTRANS_ID)
+    )
+
+-- ***CREATE Bridge Tables***
+    /* Customer_Address */
+    CREATE TABLE Customer_Address
+    (
+        CUST_ID INT NOT NULL,
+        ADDRESS_ID INT NOT NULL,
+
+        CONSTRAINT PK_Customer_Address PRIMARY KEY CLUSTERED (CUST_ID, ADDRESS_ID),
+        CONSTRAINT FK_Customer_Address_CUST_ID FOREIGN KEY (CUST_ID) REFERENCES Customer (CUST_ID)
+            ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT FK_Customer_Address_ADDRESS_ID FOREIGN KEY (ADDRESS_ID) REFERENCES Address (ADDRESS_ID)
+            ON UPDATE CASCADE ON DELETE CASCADE,
+    );
+
+    /* Product_Supplier */
+    CREATE TABLE Product_Supplier
+    (
+        SUPPLIER_ID INT NOT NULL,
+        PROD_ID INT NOT NULL,
+
+        CONSTRAINT PK_Product_Supplier_SUPPLIER_ID_PROD_ID PRIMARY KEY CLUSTERED (SUPPLIER_ID,PROD_ID),
+        CONSTRAINT FK_Product_Supplier_SUPPLIER_ID FOREIGN KEY (SUPPLIER_ID) REFERENCES Supplier (SUPPLIER_ID)
+            ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT FK_Product_Supplier_PROD_ID FOREIGN KEY (PROD_ID) REFERENCES Product (PROD_ID)
+            ON UPDATE CASCADE ON DELETE CASCADE
+	    
+	    
+Sample of Views and Index:
+
+-- BV01 Top 10 Customers with Amount Sold => Salesmgr, Salesrep
+CREATE VIEW BV01_TOP10CUSTOMERS_AMOUNTSOLD AS
+SELECT TOP 10 C.FIRST_NAME, C.LAST_NAME, Sum(AMOUNT_SOLD) AS TotalAmountSold
+FROM Customer as c
+left join Transinfo tr 
+ON c.CUST_ID = tr.CUST_ID
+GROUP BY c.LAST_NAME, c.FIRST_NAME
+
+-- INDEX
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_CID_AS_QS ON Transinfo;
+
+-- BV02 Nb of customers in each US state => Salesmgr, Salerep
+CREATE VIEW BV02_NB_CUSTOMERS_IN_US_BY_STATE AS
+SELECT distinct STATE_PROVINCE, count(c.CUST_ID) as NbOfCustomers
+FROM Transinfo tr
+join Customer c
+	on c.CUST_ID = tr.CUST_ID
+join Customer_Address ca
+	on ca.CUST_ID = c.CUST_ID
+join Address a 
+	on a.ADDRESS_ID = ca.ADDRESS_ID
+join city ci
+	on ci.POSTAL_CODE = a.POSTAL_CODE
+join Country ct
+	on ct.COUNTRY_ID = ci.COUNTRY_ID
+WHERE ct.COUNTRY = 'United States of America'
+GROUP BY COUNTRY, STATE_PROVINCE
+
+-- INDEX
+CREATE INDEX IX_City_C_SP ON City (City, STATE_PROVINCE);
+DROP INDEX IX_City_C_SP ON City;
+
+-- BV03 Nb of sales per state in the USA in 2015
+CREATE VIEW BV03_SALES_BY_STATE_US_2015 AS
+SELECT distinct ci.STATE_PROVINCE, YEAR(SALE_DATE) as YearOfSale, count(SALESTRANS_ID) as TotalNbSales
+FROM Transinfo as tr
+left join Customer_Address ca
+ON ca.CUST_ID = tr.CUST_ID
+left join City ci
+ON ci.POSTAL_CODE = ca.ADDRESS_ID
+join Country ct
+	on ct.COUNTRY_ID = ci.COUNTRY_ID
+WHERE ct.COUNTRY = 'United States of America'
+AND YEAR(SALE_DATE) = 2015
+GROUP BY STATE_PROVINCE, YEAR(SALE_DATE)
+
+--INDEX
+CREATE INDEX IX_Transinfo_CID_SD ON Transinfo (CUST_ID, SALE_DATE);
+DROP INDEX IX_Transinfo_CID_SD ON Transinfo;
+
+
+
+-- BV04 Yearly growth per state of province => Salesmgr, Accountant
+CREATE VIEW BV04_YEARLY_GROWTH_BY_STATE_PROVINCE AS
+	WITH query 
+		AS (SELECT STATE_PROVINCE, YEAR(SALE_DATE) AS YEAR, SUM(AMOUNT_SOLD) AS SALES
+				FROM Transinfo tr
+				left join Customer_Address ca
+					ON ca.CUST_ID = tr.CUST_ID
+				left join City ci
+					ON ci.POSTAL_CODE = ca.ADDRESS_ID
+				WHERE STATE_PROVINCE IS NOT NULL
+				GROUP BY STATE_PROVINCE, YEAR(SALE_DATE)
+				)
+	SELECT c1.*, 		
+						CASE 
+							WHEN c2.YEAR IS NULL THEN 'Missing data previous year'
+							WHEN c2.YEAR IS NOT NULL THEN FORMAT(CONVERT(DECIMAL(10, 2), (c1.SALES - c2.SALES)) / CONVERT(DECIMAL(10, 2), c2.SALES), 'p')
+						END 
+						AS "YEARLY GROWTH"
+	FROM query c1
+	LEFT JOIN query c2 
+	ON c1.STATE_PROVINCE = c2.STATE_PROVINCE 
+	AND c2.YEAR = c1.YEAR - 1
+
+-- INDEX
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_CID_AS_QS ON Transinfo;
+
+CREATE INDEX IX_City_C_SP ON City (City, STATE_PROVINCE);
+DROP INDEX IX_City_C_SP ON City;
+
+
+-- BV05 QUAN classified avg discounts in 3 groups per product
+CREATE VIEW BV05_AVG_DISCOUNT_CLASS AS
+with cte as (
+    select pr.PROD_ID, pr.NAME, CAST(ROUND(avg(pr.LIST_PRICE -(tr.AMOUNT_SOLD/tr.QUANTITY_SOLD)), 2) AS DECIMAL(19,2)) as AvgDiscount
+    from Transinfo tr
+	left join Product pr
+	on tr.PROD_ID = pr.PROD_ID
+--    where tr.SALE_DATE between '2012-01-01' and '2012-12-31' 
+	group by pr.PROD_ID, pr.NAME
+)
+select cte.PROD_ID, cte.AvgDiscount,
+    case when AvgDiscount between 0 and 100 then 'small avg discount'
+         when AvgDiscount between 100 and 200 then 'medium avg discount'
+		 when AvgDiscount > 200 then 'big avg discount'
+		 end
+    as [Group]
+from cte
+
+-- INDEX
+CREATE INDEX IX_Transinfo_PID_AS_QS ON Transinfo (PROD_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_PID_AS_QS ON Transinfo;
+
+-- BV06 QUAN discount rate in 2015
+CREATE VIEW BV06_DISCOUNT_RATE_2015 AS
+SELECT DISTINCT P.PROD_ID, P.NAME, CAST(ROUND(((P.LIST_PRICE - TR.AMOUNT_SOLD/TR.QUANTITY_SOLD)*100/P.LIST_PRICE), 2) AS DECIMAL(19,2)) AS DiscountRate, TR.PROMO_ID
+FROM Product P
+JOIN Transinfo TR
+ON P.PROD_ID = TR.PROD_ID
+WHERE YEAR(TR.SALE_DATE) > 2014;
+
+-- INDEX
+CREATE INDEX IX_Transinfo_PID_AS_QS ON Transinfo (PROD_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_PID_AS_QS ON Transinfo;
+
+
+-- BV07 QUAN DaysTakenToPay, salesmgr, salesrep
+CREATE VIEW BV07_DAYS_TO_PAY AS
+select distinct DATEDIFF(day, SALE_DATE, PAYMENT_DATE) as DaysTakenToPay, Sale_DATE, PAYMENT_DATE, C.FIRST_NAME, C.LAST_NAME, AMOUNT_SOLD, SALESTRANS_ID
+from Transinfo as TR
+left join Customer C 
+on TR.CUST_ID = C.CUST_ID
+GROUP BY FIRST_NAME, LAST_NAME, PAYMENT_DATE, SALE_DATE, AMOUNT_SOLD, SALESTRANS_ID;
+
+-- INDEX
+CREATE INDEX IX_Transinfo_CID_SD ON Transinfo (CUST_ID, SALE_DATE);
+DROP INDEX IX_Transinfo_CID_SD ON Transinfo;
+
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_CID_AS_QS ON Transinfo;
+
+-- BV08 QUAN days taken to ship sale, inventorymgr, salesmgr
+CREATE VIEW BV08_DAYS_TO_SHIP AS
+select DATEDIFF(day, SALE_DATE, SHIPPING_DATE) as DaystoShip, Sale_DATE, SHIPPING_DATE, SALESTRANS_ID 
+from Transinfo
+
+-- INDEX
+CREATE INDEX IX_Transinfo_CID_SD ON Transinfo (CUST_ID, SALE_DATE);
+DROP INDEX IX_Transinfo_CID_SD ON Transinfo;
+
+
+Sample of Stored Procedures:
+CREATE PROCEDURE sp_BV01_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV01_TOP10CUSTOMERS_AMOUNTSOLD TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV01_TOP10CUSTOMERS_AMOUNTSOLD TO ' + @username )
+end
+
+EXEC sp_BV01_Security 'salesmgr';
+EXEC sp_BV01_Security 'salesrep';
+
+
+
+CREATE PROCEDURE sp_BV02_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV02_NB_CUSTOMERS_IN_US_BY_STATE TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV02_NB_CUSTOMERS_IN_US_BY_STATE TO ' + @username )
+end
+
+EXEC sp_BV02_Security 'salesmgr';
+EXEC sp_BV02_Security 'salesrep';
+
+
+
+
+CREATE PROCEDURE sp_BV03_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV03_SALES_BY_STATE_US_2015 TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV03_SALES_BY_STATE_US_2015 TO ' + @username )
+end
+
+EXEC sp_BV03_Security 'salesmgr';
+EXEC sp_BV03_Security 'salesrep';
+
+
+
+
+
+CREATE PROCEDURE sp_BV04_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV04_YEARLY_GROWTH_BY_STATE_PROVINCE TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV04_YEARLY_GROWTH_BY_STATE_PROVINCE TO ' + @username )
+end
+
+EXEC sp_BV04_Security 'salesmgr';
+EXEC sp_BV04_Security 'accountant';
+
+
+
+
+
+CREATE PROCEDURE sp_BV05_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV05_AVG_DISCOUNT_CLASS TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV05_AVG_DISCOUNT_CLASS TO ' + @username )
+end
+
+EXEC sp_BV05_Security 'salesmgr';
+EXEC sp_BV05_Security 'salesrep';
+EXEC sp_BV05_Security 'accountant';
+
+
+
+
+
+CREATE PROCEDURE sp_BV06_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV06_DISCOUNT_RATE_2015 TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV06_DISCOUNT_RATE_2015 TO ' + @username )
+end
+
+EXEC sp_BV06_Security 'salesmgr';
+EXEC sp_BV06_Security 'salesrep';
+
+
+
+
+CREATE PROCEDURE sp_BV07_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV07_DAYS_TO_PAY TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV07_DAYS_TO_PAY TO ' + @username )
+end
+
+EXEC sp_BV07_Security 'salesmgr';
+EXEC sp_BV07_Security 'accountant';
+
+
+
+
+CREATE PROCEDURE sp_BV08_Security @username varchar(20)
+as
+begin
+	EXEC ('GRANT SELECT ON BV08_DAYS_TO_SHIP TO ' + @username )
+  EXEC ('GRANT UPDATE ON BV08_DAYS_TO_SHIP TO ' + @username )
+end
+
+EXEC sp_BV08_Security 'salesmgr';
+EXEC sp_BV08_Security 'inventorymgr';
+
+
+
+------------------------------------------------
+------------------------------------------------
+------------------------------------------------
+
+-- STORED PROCEDURE (UPDATE AND DELETE)
+
+-- STP01 : Delete Product
+CREATE PROCEDURE stp01_delete_product
+(
+   @productId INT
+)
+AS 
+BEGIN 
+ BEGIN TRY
+    BEGIN TRANSACTION;
+		 -- try deleting the product
+		 DELETE FROM Product
+		 WHERE PROD_ID = @productId
+	 
+	 -- if DELETE succeeds, commit the transaction
+    COMMIT TRANSACTION;  
+	    RAISERROR('The product has been deleted!', 16, 1)
+ END TRY
+BEGIN CATCH
+        IF @@TRANCOUNT > 0  
+            ROLLBACK TRANSACTION;
+        RAISERROR('The product has not been deleted!', 16, 1)
+END CATCH 
+END;
+GO
+ 
+/** Execute Stored Procedure **/
+EXEC stp01_delete_product
+      @productId =10
+-- DROP PROCEDURE stp01_delete_product;
+
+
+
+-- STP02: Update customer
+
+
+-- STP02 : Update customer phone number and email
+CREATE PROCEDURE stp02_update_customer_firstname_lastname_phonenumber_email_yearofbirth
+(
+@customerId INT,
+@firstname varchar(255),
+@lastname varchar(255),
+@phoneNumber varchar(255),
+@email varchar(255),
+@yearofbirth int
+)
+AS 
+BEGIN 
+ BEGIN TRY
+     BEGIN TRANSACTION;
+		 -- try deleting the product
+		 UPDATE Customer
+		 SET 
+		 FIRST_NAME = @firstname,
+		 LAST_NAME = @lastname,
+		 PHONE_NUMBER = @phoneNumber, 
+		 EMAIL = @email,
+		 YEAR_OF_BIRTH = @yearofbirth
+		 WHERE CUST_ID = @customerId
+	 
+	 -- if update succeeds, commit the transaction
+	 	     Raiserror('The customer data have been updated!',16,1)
+     COMMIT TRANSACTION;  
+ END TRY
+ 
+BEGIN CATCH
+        IF @@TRANCOUNT > 0  
+			     Raiserror('The customer data have NOT been updated!',16,1)
+            ROLLBACK TRANSACTION;
+
+END CATCH
+    
+END;
+GO
+ 
+/*
+Abigail,
+Kessel, 
+127-379-8954
+kessel@company.com, 
+1946
+*/
+
+/** Execute Stored Procedure **/
+EXEC stp02_update_customer_firstname_lastname_phonenumber_email_yearofbirth
+   @customerId = 1,
+   @firstname = 'testFirstName',
+   @lastname = 'testLastName',
+   @phoneNumber = '123-321-1234',
+   @email = 'test@company.com', 
+   @yearofbirth = '2020';
+
+-- drop procedure stp02_update_customer_firstname_lastname_phonenumber_email_yearofbirth;
+
+
+Sample of other indexes:
+--BV01
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+
+--BV03
+CREATE INDEX IX_Transinfo_CID_SD ON Transinfo (CUST_ID, SALE_DATE);
+
+--BV04
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+
+--BV05
+CREATE INDEX IX_Transinfo_PID_AS_QS ON Transinfo (PROD_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+
+--BV07
+CREATE INDEX IX_Customer_FN_LN ON Customer (FIRST_NAME, LAST_NAME);
+
+
+CREATE INDEX IX_Transinfo_CID_AS_QS ON Transinfo (CUST_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+CREATE INDEX IX_Transinfo_CID_SD ON Transinfo (CUST_ID, SALE_DATE);
+CREATE INDEX IX_Customer_FN_LN ON Customer (FIRST_NAME, LAST_NAME);
+
+CREATE INDEX IX_Transinfo_STID_AS ON Transinfo (SALESTRANS_ID, AMOUNT_SOLD);
+DROP INDEX IX_Transinfo_STID_AS ON Transinfo;
+
+CREATE INDEX IX_City_PC_SP ON City (POSTAL_CODE, STATE_PROVINCE);
+DROP INDEX IX_City_PC_SP ON City;
+
+CREATE INDEX IX_Transinfo_STID_YOS ON Transinfo (SALESTRANS_ID, SALE_DATE);
+DROP INDEX IX_Transinfo_STID_YOS ON Transinfo;
+
+CREATE INDEX IX_Transinfo_STID_AS_QS ON Transinfo (SALESTRANS_ID, AMOUNT_SOLD, QUANTITY_SOLD);
+DROP INDEX IX_Transinfo_STID_AS_QS ON Transinfo;
+
+CREATE INDEX IX_Product_PID_N ON Product (PROD_ID, NAME, LIST_PRICE)
+DROP INDEX IX_Product_PID_N ON Product;
+
+-- Top 10 Customers with Amount Sold--
+Create Index IDX_TRANSINFO_AMOUNT_SOLD on Transinfo (AMOUNT_SOLD)
+Create NONCLUSTERED Index NCIDX__TRANSINFO_AMOUNT_SOLD on Transinfo (AMOUNT_SOLD)
+--  Active customers in California
+Create Index IDX_CUSTOMER_CUST_ID on Customer (CUST_ID)
+Create NONCLUSTERED Index NCIDX_CUSTOMER_CUST_ID on Customer (CUST_ID)
+-- Nb cities per state in the US
+Create Index IDX_CITY_STATE_PROVINCE on City (STATE_PROVINCE)
+Create NONCLUSTERED Index NCIDX_CITY_STATE_PROVINCE on City (STATE_PROVINCE)
+-- Nb of sales per state in the USA in 2015
+Create Index IDX_TRANSINFO_SALESTRANS_ID on Transinfo (SALESTRANS_ID)
+Create NONCLUSTERED Index NCIDX_TRANSINFO_SALESTRANS_ID on Transinfo (SALESTRANS_ID)
+-- Yearly growth per state of province
+Create Index SALE_TRANSINFO_DATE_AMOUNT_SOLD on Transinfo (SALE_DATE, AMOUNT_SOLD)
+Create NONCLUSTERED Index NC_TRANSINFO_SALE_DATE_AMOUNT_SOLD on Transinfo (SALE_DATE, AMOUNT_SOLD)
+-- avgdiscount per product
+Create Index IDX_PRODUCT_PROD_ID on Product (PROD_ID)
+Create NONCLUSTERED Index NCIDXPRODUCT__PROD_ID on Product (PROD_ID)
+-- classified avg discounts in 3 groups per product
+Create Index QUANTITY_SOLD_AMOUNT_SOLD on Transinfo (QUANTITY_SOLD, AMOUNT_SOLD)
+Create Index IDX_TRANSINFO_PROD_ID on Transinfo (PROD_ID)
+-- QUAN discount rate in 2015
+Create Index IDX_PRODUCT_PROD_ID on Product (PROD_ID)
+Create NONCLUSTERED Index NCIDX_PRODUCT_PROD_ID on Product (PROD_ID)
+-- DaysTakenToPay 
+Create Index SALE_DATE_PAYMENT_DATE on Transinfo (SALE_DATE, PAYMENT_DATE)
+Create Index IDX_TRANSINFO_PROD_ID on Transinfo (PROD_ID)
+-- days taken to ship sale
+Create Index SALE_DATE_SHIPPING_DATE on Transinfo (SALE_DATE, SHIPPING_DATE)
+Create Index IDX_TRANSINFO_SALESTRANS_ID on Transinfo (SALESTRANS_ID)
+
+

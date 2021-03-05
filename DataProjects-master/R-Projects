@@ -1,0 +1,31 @@
+Regression Analysis:
+
+library(readxl)
+santaclara <- read_excel("C:/Users/cruel/Desktop/Data Practicum/Santa-Clara-Analysis.xlsx", range = cell_cols("B:C"))
+removena <- na.omit(santaclara) 
+subdivisionlegalcode <- lm(Unique_ID ~ land_use_code, data = removena)
+summary(subdivisionlegalcode)
+
+library(readxl)
+santaclaracitystreetnamenumber <- read_excel("C:/Users/cruel/Desktop/Data Practicum/StreetnameNumberstories.xlsx")
+removena <- na.omit(santaclaracitystreetnamenumber)
+/StreetnameNumberstories <- lm(Id ~ storiesnbr, data = removena)
+summary(StreetnameNumberstories)
+
+library(readxl)
+santaclaracityzip <- read_excel("C:/Users/cruel/Desktop/Data Practicum/City_Zip.xlsx")
+removena <- na.omit(santaclaracityzip) 
+santaclaracountyzip <- lm(Id ~ Zipcode, data = removena)
+summary(santaclaracountyzip)
+
+library(readxl)
+santaclaracitygaragetype <- read_excel("C:/Users/cruel/Desktop/Data Practicum/GarageTypeYearEff.xlsx")
+removena <- na.omit(santaclaracitygaragetype) 
+santaclaracitygaragetypeyeareff<- lm(yearblteff ~ garagetype, data = removena)
+summary(santaclaracitygaragetypeyeareff)
+
+library(readxl)
+LSubdivisionLtractAnalysis <- read_excel("C:/Users/cruel/Desktop/Data Practicum/LSubdivisionLtractAnalysis.xlsx")
+removena <- na.omit(LSubdivisionLtractAnalysis)
+LSubdivisionLtract <- lm(Id ~ legal_tract, data = removena)
+summary(LSubdivisionLtract )
