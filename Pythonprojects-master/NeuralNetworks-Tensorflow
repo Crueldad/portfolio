@@ -1,0 +1,184 @@
+import tensorflow as tf
+import os
+from skimage.io import imread, imshow
+from skimage import *
+import numpy as np
+from skimage import transform 
+from skimage.color import rgb2gray
+import matplotlib.pyplot as plt 
+
+
+def ld(dd):
+    directories = [d for d in os.listdir(dd) 
+                   if os.path.isdir(os.path.join(dd, d))]
+    labels = []
+    images = []
+    for d in directories:
+        label_directory = os.path.join(dd, d)
+        file_names = [os.path.join(label_directory, f) 
+                      for f in os.listdir(label_directory) 
+                      if f.endswith(".ppm")]
+        for f in file_names:
+            images.append(imread(f))
+            labels.append(int(d))
+    return images, labels
+
+ROOT_PATH = "C:/Users/guestagain/Desktop/nn"
+tr_dd= os.path.join(ROOT_PATH, "Training")
+ts_dd= os.path.join(ROOT_PATH, "Testing")
+
+images, labels = ld(train_dd)
+
+
+tr_signs = [300, 2250, 3650, 4000]
+
+for i in range(len(tr_signs)):
+    plt.subplot(1, 4, i+1)
+    plt.axis('off')
+    plt.imshow(images[tr_signs[i]])
+    plt.subplots_adjust(wspace=0.5)
+
+plt.show()
+
+
+
+plt.hist(labels, 62)
+plt.show()
+
+
+
+
+tr_signs = [300, 2250, 3650, 4000]
+
+for i in range(len(tr_signs)):
+    plt.subplot(1, 4, i+1)
+    plt.axis('off')
+    plt.imshow(images[tr_signs[i]])
+    plt.subplots_adjust(wspace=0.5)
+    plt.show()
+    print("shape: {0}, min: {1}, max: {2}".format(images[tr_signs[i]].shape, 
+                                                  images[tr_signs[i]].min(), 
+                                                  images[tr_signs[i]].max()))
+
+
+
+uniquel = set(labels)
+
+plt.figure(figsize=(15, 15))
+
+i = 1
+
+for label in uniquel:
+    image = images[labels.index(label)]
+    plt.subplot(8, 8, i)
+    plt.axis('off')
+    plt.title("Label {0} ({1})".format(label, labels.count(label)))
+    i += 1
+    plt.imshow(image)
+
+plt.show()
+
+images28 = [transform.resize(image, (28, 28)) for image in images]
+images28 = np.array(images28)
+images28 = rgb2gray(images28)
+
+
+
+tr_signs = [300, 2250, 3650, 4000]
+
+for i in range(len(tr_signs)):
+    plt.subplot(1, 4, i+1)
+    plt.axis('off')
+    plt.imshow(images28[tr_signs[i]], cmap="gray")
+    plt.subplots_adjust(wspace=0.5)
+    
+plt.show()
+
+
+
+x = tf.placeholder(dtype = tf.float32, shape = [None, 28, 28])
+y = tf.placeholder(dtype = tf.int32, shape = [None])
+
+imagesf = tf.contrib.layers.flatten(x)
+
+logitsf = tf.contrib.layers.fully_connected(imagesf, 62, tf.nn.relu)
+
+lossf = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logitsf(labels = y, 
+                                                                    logitsf = logitsf))
+optimize_train = tf.train.AdamOptimizer(learning_rate=0.005).minimize(lossf)
+
+correct_pred = tf.argmax(logitsf, 1)
+
+accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+
+
+print("imagesf: ", imagesf)
+print("logitsf: ", logitsf)
+print("lossf: ", lossf)
+print("predicted_labels: ", correct_pred)
+
+
+
+tf.set_random_seed(1234)
+sess = tf.Session()
+
+sess.run(tf.global_variables_initializer())
+
+for i in range(201):
+        print('EPOCH', i)
+        _, accuracy_val = sess.run([optimize_train, accuracy], feed_dict={x: images28, y: labels})
+        if i % 10 == 0:
+            print("Lossf: ", lossf)
+        print('Epoch finished')
+
+
+tf.set_random_seed(1234)
+
+
+
+
+import matplotlib.pyplot as plt
+import random
+
+sindexes = random.sample(range(len(images28)), 10)
+simages = [images28[i] for i in sindexes]
+slabels = [labels[i] for i in sindexes]
+
+predicted = sess.run([correct_pred], feed_dict={x: simages})[0]
+                        
+print(slabels)
+print(predicted)
+
+fig = plt.figure(figsize=(10, 10))
+for i in range(len(simages)):
+    truth = slabels[i]
+    prediction = predicted[i]
+    plt.subplot(5, 2,1+i)
+    plt.axis('off')
+    color='light_green' if truth == prediction else 'dark_red'
+    plt.text(40, 10, "Truth:        {0}\nPrediction: {1}".format(truth, prediction), 
+             fontsize=12, color=color)
+    plt.imshow(simages[i],  cmap="gray")
+
+plt.show()
+
+
+
+
+from skimage import transform
+
+test_images, test_labels = ld(test_dd)
+
+test_images28 = [transform.resize(image, (28, 28)) for image in test_images]
+
+from skimage.color import rgb2gray
+test_images28 = rgb2gray(np.array(test_images28))
+
+predicted = sess.run([correct_pred], feed_dict={x: test_images28})[0]
+ 
+match_count = sum([int(y == y_) for y, y_ in zip(test_labels, predicted)])
+
+accuracy = match_count / len(test_labels)
+
+print("Accuracy: {:.3f}".format(accuracy))

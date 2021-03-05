@@ -1,0 +1,131 @@
+import sys
+sys.setrecursionlimit(5000)  
+from random import *
+import time
+import emoji
+
+#part1
+def rs(n):
+    """rs chooses a random step and returns it.
+       note that a call to rs() requires parentheses
+       arguments: none at all!
+    """
+    return choice([-1, 1])
+
+#part2 
+def rwpos(start, nsteps):
+    print('start is', start)
+    if nsteps == 0:
+        print(start)
+    else:
+        return rwpos(start+rs(nsteps),nsteps-1)
+
+#part3
+def rwsteps(start, low, high):
+    if start == low or start == high:
+        print('start|'+'_'* (start - low) + 'S'+'_'* (high - start) +'|end')
+        return 0
+    else:
+        print('start|'+'_'* (start - low) + 'S'+'_'* (high - start) +'|end')
+        time.sleep(0.5)
+        return 1 + (rwsteps( start + rs(start) , low, high ))
+
+#1.signed displacement
+def signed_displacement(start, nsteps):
+    K = []
+    total = start
+    count_P = 0
+    print("Start is", start)
+    for i in range(nsteps):
+        guess = choice([-1,1])
+        total = total + guess
+        print("Start is", total)
+        K = K + [guess]
+    for i in range(len(K)):
+        count_P = count_P + K[i]
+    return count_P
+
+#2squared displacement
+def squareddisplacement(start,nsteps):
+    K = []
+    total = start
+    count_P = 0
+    print("Start is", start)
+    for i in range(nsteps):
+        guess = choice([-1,1])
+        total = total + guess
+        print("Start is", total)
+        K = K + [guess]
+    for i in range(len(K)):
+        count_P = count_P + K[i]
+    return count_P*count_P
+
+#To-do item 1:
+def rwposPlain(start, nsteps):
+    K = []
+    total = start
+    count_P = 0
+    # print("Start is", start)
+    for i in range(nsteps):
+        guess = choice([-1,1])
+        total = total + guess
+        # print("Start is", total)
+        K = K + [guess]
+    # print(K)
+    for i in range(len(K)):
+        count_P = count_P + K[i]
+    return total
+
+#To-do item 2,3, and 4:
+def avg(start,nsteps, num):
+    LC = [rwposPlain(start,nsteps) for x in range(num)]
+    a = sum(LC)/len(LC)
+    return a
+    
+def ave_signed_displacement(numtrials):
+    LC = [rwposPlain(0,100) for x in range(numtrials)]
+    a = sum(LC)/len(LC)
+    return a
+
+def ave_squared_displacement(numtrials):
+    LC = [rwposPlain(0,100)**2 for x in range(numtrials)]
+    a = sum(LC)/len(LC)
+    return a
+
+#extracredit
+def ExtraCreditrwsteps(start, low, high):
+    a = (start - low)
+    b = (high - start)
+    if start == low or start == high:
+        if a > b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '´¯`·.¸><(((º>'+'_'* b +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        elif a < b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '<º)))><¸.·`¯´'+'_'* b  +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        time.sleep(0.1)
+        return 0
+    else:
+        if a > b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '´¯`·.¸><(((º>'+'_'* b +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        elif a < b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '<º)))><¸.·`¯´'+'_'* b  +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        time.sleep(0.1)
+        return 1 + (ExtraCreditrwsteps( start + rs(start) , low, high ))
+
+
+def ExtraCreditrwsteps_2(start, low, high):
+    a = (start - low)
+    b = (high - start)
+    if start == low or start == high:
+        if a > b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '''(>'-')>o()xxxx[{:::::::::> (>'_')> '''+'_'* b +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        elif a < b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '''<('-'<) <:::::::::{[xxxx())o<('_'<) '''+'_'* b  +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        time.sleep(0.2)
+        return 0
+    else:
+        if a > b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '''(>'-')>o()xxxx[{:::::::::> (>'_')> '''+'_'* b +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        elif a < b:
+            print('start[♥]]] [♦]]] [♣]]] [♠]]]'+'_'* a + '''<('-'<) <:::::::::{[xxxx())o<('_'<) '''+'_'* b  +'[♥]]] [♦]]] [♣]]] [♠]]]end')
+        time.sleep(0.2)
+        return 1 + (ExtraCreditrwsteps_2( start + rs(start) , low, high ))

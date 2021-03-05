@@ -1,0 +1,74 @@
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+dataset = pd.read_csv('c:/Users/cruel/Downloads/example.csv')
+
+X = dataset.iloc[:, [0]].values
+y = dataset.iloc[:, 1].values
+
+from sklearn.linear_model import LinearRegression
+
+linear_reg = LinearRegression()
+linear_reg.fit(X, y)
+
+plt.scatter(X, y, color = 'black')
+plt.plot(X, linear_reg.predict(X), color = 'red')
+plt.title('Reward System (Linear Regression)')
+plt.xlabel('Hours')
+plt.ylabel('Points')
+plt.show()
+
+from sklearn.preprocessing import PolynomialFeatures
+
+polynomial_reg = PolynomialFeatures(degree = 3)
+X_polynomial = polynomial_reg.fit_transform(X)
+polynomial_reg.fit(X_polynomial, y)
+linear_polynomial = LinearRegression()
+linear_polynomial.fit(X_polynomial, y)
+
+plt.scatter(X, y, color = 'black')
+plt.plot(X, linear_polynomial.predict(polynomial_reg.fit_transform(X)), color = 'red')
+plt.title('Reward System (Linear Regression)')
+plt.xlabel('Hours')
+plt.ylabel('Points')
+plt.show()
+
+y_pred_by_simple_linear =linear_reg.predict([[90]])
+
+y_pred_by_polynomial_linear = linear_polynomial.predict(polynomial_reg.fit_transform([[90]]))
+
+import pandas as pd
+import numpy as np
+a = pd.read_excel('Desktop\Data Practicum\CoronaConfirmedCases.xlsx')
+
+df = pd.DataFrame(data = np.random.uniform(a))
+print(df.pct_change())
+
+
+import pandas as pd
+import numpy as np
+
+# Now, we will load the data set and look at some initial rows and data types of the columns:
+data = pd.read_csv('Desktop\Data Practicum\c19c.csv')
+print (data.head())
+print ('\n Data Types:')
+print (data.dtypes)
+
+# The data contains a particular month and number of passengers travelling in that month. In order to read the data as a time series, we have to pass special arguments to the read_csv command:
+dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+data = pd.read_csv('Desktop\Data Practicum\c19c.csv', parse_dates=['Date'], index_col='Date',date_parser=dateparse)
+print ('\n Parsed Data:')
+print (data.head())
+data.index
+
+
+from pandas import read_csv
+from matplotlib import pyplot
+# load dataset
+series = read_csv('Desktop\Data Practicum\c19c.csv', header=0, index_col=0)
+# display first few rows
+print(series.tail(20))
+# line plot of dataset
+series.plot()
+pyplot.show()

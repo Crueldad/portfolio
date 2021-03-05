@@ -1,0 +1,122 @@
+men_round_of_16 = { 
+"Victor_Round _1": "Novak Djokovic",
+"Loser_Round _1": "Ugo Humbert",
+"Victor_Round_2": "Roger Federer",
+"Loser_Round _2": "Matteo Berrettini",
+"Victor_Round _3": "Rafael Nadal",
+"Loser_Round _3": "Joao Sousa",
+"Victor_Round _4": "Sam Querrey",
+"Loser_Round _4": "Tennys Sandgren",
+"Victor_Round _5": "Kei Nishikori",
+"Loser_Round _5": "Mikhail Kukushkin",
+"Victor_Round _6": "Guido Pella",
+"Loser_Round _6": "Milos Raonic",
+"Victor_Round _7": "David Goffin",
+"Loser_Round _7": "Fernando Verdasco",
+"Victor_Round _8": "Roberto Bautista Agut",
+"Loser_Round _8": "Benoit Paire" }
+
+women_round_of_16 = { 
+"Victor_Round _1": "Shuai Zhang",
+"Losers_Round _1": "Dayana Yastremska",
+"Victor_Round _2": "Elina Svitolina",
+"Losers_Round _2": "Petra Martic",
+"Victor_Round _3": "Alison Riske",
+"Losers_Round _3": "Ashleigh Barty",
+"Victor_Round _4": "Barbora Strycova",
+"Losers_Round _4": "Elise Mertens",
+"Victor_Round _5": "Karolina Muchova",
+"Losers_Round _5": "Karolina Pliskova",
+"Victor_Round _6": "Serena Williams",
+"Losers_Round _6": "Carla Suarez-Navarro",
+"Victor_Round _7": "Simona Halep",
+"Losers_Round _7": "Cori Gauff",
+"Victor_Round _8": "Johanna Konta",
+"Losers_Round _8": "Petra Kvitova" }
+
+men_quarter_finals = {
+"Victor_Round _1": "Novak Djokovic",
+"Loser_Round _1": "David Goffin",
+"Victor_Round _2": "Roger Federer",
+"Loser_Round _2": "Kei Nishikori",
+"Victor_Round _3": "Rafael Nadal",
+"Loser_Round _3": "Sam Querrey",
+"Victor_Round _4": "Roberto Bautista Agut",
+"Loser_Round _4": "Guido Pella",
+}
+
+women_quarter_finals = {
+"Victor_Round _1": "Serena Williams",
+"Losers_Round _1": "Alison Riske",
+"Victor_Round _2": "Simona Halep",
+"Losers_Round _2": "Shuai Zhang",
+"Victor_Round _3": "Elina Svitolina",
+"Losers_Round _3": "Karolina Muchova",
+"Victor_Round _4": "Barbora Strycova",
+"Losers_Round _4": "Johanna Konta",
+}
+
+men_semi_finals = {
+"Victor_Round _1": "Novak Djokovic",
+"Loser_Round _1": "Roberto Bautista Agut",
+"Victor_Round _2": "Roger Federer",
+"Loser_Round _2": "Rafael Nadal",
+}
+
+women_semi_finals = {
+"Victor_Round _1": "Simona Halep",
+"Loser_Round _1": "Elina Svitolina",
+"Victor_Round _2": "Serena Williams",
+"Loser_Round _2": "Barbora Strycova",
+}
+
+men_final = {
+"Victor_Final_Round": "Novak Djokovic",
+"Loser__Final_Round": "Roger Federer",
+}
+
+women_final = {
+"Victor_Final_Round": "Simona Halep",
+"Loser_Final_Round": "Serena Williams",
+}
+
+Men = {"Men": [men_round_of_16, men_quarter_finals, men_semi_finals, men_final]}
+Women = {"Women": [women_round_of_16, women_quarter_finals, women_semi_finals, women_final]}
+
+Wimbledon = []
+Wimbledon.append(Men)
+Wimbledon.append(Women)
+
+c = (Wimbledon[1]["Women"][0])
+for women_names in c.values():
+    women = women_names
+    print(women)
+
+Rounds = ["final", "semi finals", "quarter finals", "round of 16"]
+def tournament_round_games(Tournament, Category, Round):
+    if Tournament != Wimbledon:
+        print("Input is wrong")
+    if Category != "Men" and "Women":
+        print("Must choose gender")
+    if Round not in Rounds:
+        print("Does not accept input") 
+    else:  
+        if Category == "Men":
+            if Round == ("final"):
+                print(men_final)
+            elif Round == ("semi finals"):
+                print(men_semi_finals)
+            elif Round == ("quarter finals"):
+                print(men_quarter_finals)
+            elif Round == ("round of 16"):
+                print(men_round_of_16)
+        elif Category == 'Women':
+            if Round == ("final"):
+                print(women_final)
+            elif Round == ("semi finals"):
+                print(women_semi_finals)
+            elif Round == ("quarter finals"):
+                print(women_quarter_finals)
+            elif Round == ("round of 16"):
+                print(women_round_of_16)
+tournament_round_games(Wimbledon, "Men", "semi finals") 

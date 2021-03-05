@@ -1,0 +1,64 @@
+def dbl(x):
+    """Doubler!  argument: x, a number"""
+    return 2*x
+
+def sq(x):
+    """Squarer!  argument: x, a number"""
+    return x**2
+
+
+
+# examples for getting used to list comprehensions...
+
+def lc_mult(N):
+    """This example accepts an integer N
+       and returns a list of integers
+       from 0 to N-1, **each multiplied by 2**
+    """
+    return [2*x for x in range(N)]
+
+def lc_idiv(N):
+    """This example accepts an integer N
+       and returns a list of integers
+       from 0 to N-1, **each divided by 2**
+  
+    """
+    return [x//2 for x in range(N)]
+
+def lc_fdiv(N):
+    """This example accepts an integer N
+       and returns a list of integers
+       from 0 to N-1, **each divided by 2**
+       NOTE: this is floating-point division...!
+    """
+    return [x/2 for x in range(N)]
+
+
+
+#Step 1
+
+def unitfracs(N):
+    return [x/N for x in range(N)]
+
+
+def scaledfracs(low, hi, N):
+    """ Returns a list of N left endpoints that goes through
+        the interval of low and high
+    """
+    return [(hi-low)*x+low for x in unitfracs(N)]
+
+#Step 2
+
+def sqfracs(low, hi, N):
+    return [x**2 for x in scaledfracs(low, hi, N)]
+
+def f_of_fracs(f, low, hi, N):
+    return [f(x) for x in scaledfracs(low, hi, N)]
+ 
+
+#Step 3: Calculate the area and put it all together
+def integrate(f, low, hi, N):
+    bunchonumbers = f_of_fracs(f, low, hi, N)
+    width = (hi-low)/N
+    return sum(bunchonumbers)*width
+    

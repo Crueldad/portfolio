@@ -1,0 +1,64 @@
+def fac(n):
+    """Loop-based factorial function
+       Argument: a nonnegative integer, n
+       Return value: the factorial of n
+    """
+    result = 1                 # starting value - like a base case
+    for x in range(1,n+1):     # loop from 1 to n, inclusive
+        result = result * x    # update the result by mult. by x
+    return result              # notice this is AFTER the loop!
+
+
+# Looping function to write #1: power(b,p)
+def power(b,p):
+    total = 1
+    for i in range(1, p+1):
+        total = total *b
+    return(total)
+
+#Looping function to write #2: summedOdds(L)
+def summed(L):
+    """Loop-based function to return a numeric list.
+       ("sum" is built-in, so we're using a different name.)
+       Argument: L, a list of integers.
+       Result: the sum of the list L.
+    """
+    result = 0
+    for e in L:
+        result = result + e    # or result += e
+    return result
+
+
+# Looping function to write #2: summedOdds(L)
+def summedOdds(L):
+    results = 0
+    for i in L:
+        if i%2 != 0:
+            results = results + i
+    return results
+
+# Looping function to write #3: untilARepeat( high )
+def unique(L):
+  """Returns whether all elements in L are unique.
+     Argument: L, a list of any elements.
+     Return value: True, if all elements in L are unique,
+                or False, if there is any repeated element
+  """
+  if len(L) == 0:
+    return True
+  elif L[0] in L[1:]:
+    return False
+  else:
+    return unique(L[1:])  
+
+def untilARepeat(high):
+    guess = random.choice(range(0, high))
+    L = [guess]
+    numberofguess = 1
+    while unique(L):
+        guess = random.choice(range(0, high))
+        numberofguess += 1
+        L = L+[guess]
+    
+    print(L)
+    return numberofguess

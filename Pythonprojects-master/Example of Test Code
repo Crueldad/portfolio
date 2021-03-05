@@ -1,0 +1,40 @@
+def test_home_page():
+    path = reverse('index')
+    assert resolve(path).view_name == 'index'
+
+def test_about_page():
+    path = reverse('about')
+    assert resolve(path).view_name == 'about'
+
+def test_chooseplan_page():
+    path = reverse('chooseplan')
+    assert resolve(path).view_name == 'chooseplan'
+
+def test_choosepl():
+    path = reverse('show_chooseplan')
+    assert resolve(path).view_name == 'show_chooseplan'
+
+    def test_gender():
+    b = questions.objects.create(
+        Gender= "1"
+    )
+    assert b.Gender == "1"
+
+def test_age():
+    b = questions.objects.create(
+        Age= "5"
+    )
+    assert b.Age == "5"
+
+    
+def test_match_code1():
+    a = match_code1('1OSIS')
+    if 'Sharp_Silver_70_HMO' in a:
+        assert True
+    else:
+        assert False
+
+def test_ret_code1():
+    a = ('32S', '10DT', '40OSIS', '28SNC')
+    b = []
+    assert ret_code1(a) == b
